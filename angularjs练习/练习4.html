@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>ng-4</title>
+</head>
+<body>
+<div ng-controller='MainController'>
+    父亲:{{name}}<input ng-model="name" />
+    <my-directive></my-directive>
+</div>
+
+<script src="angular.min.js"></script>
+<script type="text/javascript">
+    var app = angular.module('myApp', []);
+    app.controller('MainController', function ($scope) {
+        $scope.name = '林炳文';
+    });
+    app.directive('myDirective', function () {
+        return {
+            restrict: 'E',
+            replace:false,
+//            scope:false,
+//            scope:true,
+            scope:{},
+            template: '<div>儿子:{{ name }}<input ng-model="name"/></div>'
+        };
+    });
+</script>
+</body>
+</html>

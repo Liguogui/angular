@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ng-3</title>
+</head>
+<body ng-app="demo">
+
+    <div ng-controller="myController">
+
+        <button my-click>来点击我呀</button>
+        {{say}}
+    </div>
+<script src="angular.min.js"></script>
+    <script>
+        var app = angular.module('demo',[]);
+        app.controller('myController',['$rootScope','$scope',function($rootScope,$scope){
+
+            $scope.print = function () {
+                $scope.say = 'my-click';
+            }
+        }]);
+        app.directive('myClick',[function () {
+               return{
+                   restrict:'A',
+                   link:function (scope,ele,attr) {
+                       ele.on('click',function(){
+                           scope.print();
+                           scope.$digest();
+//                           scope.$apply();
+                       });
+                   }
+            }
+        }]);
+    </script>
+</body>
+</html>

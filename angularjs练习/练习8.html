@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" ng-app = 'myApp'>
+<head>
+    <meta charset="UTF-8">
+    <title>ng-8</title>
+</head>
+<body>
+<div ng-controller="myController">
+    <button myclick>increase</button>
+    <span ng-bind="counter" ng-click="change()"></span>
+</div>
+<div ng-controller="OuterCtrl">
+    <div ng-controller="InnerCtrl">
+        <button increaseb>increase b</button>
+        <span ng-bind="b"></span>
+    </div>
+    <button increasea>increase a</button>
+    <span ng-bind="a"></span>
+</div>
+<div ng-controller="newController as demo">
+    {{demo.a}}
+</div>
+<div ng-controller="helloController as demo">
+    {{demo.a}}
+    <div ng-click="demo.add()">点击</div>
+    {{demo.b}}
+</div>
+
+<script src="angular.min.js"></script>
+<script>
+    var app = angular.module('myApp',[]);
+    app.directive("increasea", function() {
+        return function (scope, element, attr) {
+            element.on("click", function() {
+                scope.a++;
+                scope.$digest();
+            });
+        };
+    });
+
+    app.directive("increaseb", function() {
+        return function (scope, element, attr) {
+            element.on("click", function() {
+                scope.b++;
+                scope.$apply();    //这个换成$apply即可
+            });
+        };
+    });
+
+    app.controller("OuterCtrl", ["$scope", function($scope) {
+        $scope.a = 1;
+
+        $scope.$watch("a", function(newVal) {
+            console.log("a:" + newVal);
+        });
+
+        $scope.$on("test", function(evt) {
+            $scope.a++;
+        });
+    }]);
+
+    app.controller("InnerCtrl", ["$scope", function($scope) {
+        $scope.b = 2;
+
+        $scope.$watch("b", function(newVal) {
+            console.log("b:" + newVal);
+            $scope.$emit("test", newVal);
+        });
+    }]);
+
+
+
+
+    app.controller('myController',['$rootScope','$scope',function ($rootScope,$scope) {
+        $scope.counter = 0;
+        $scope.change = function () {
+            $scope.counter++
+        }
+    }]);
+    app.directive("myclick", function() {
+        return function (scope, element, attrs) {
+            element.on("click", function() {
+                scope.counter++;
+//                scope.$digest();
+                scope.$apply(function(){
+                    scope.counter++; //这样就又加了一次，加二了都
+                });
+            });
+        };
+    });
+
+    app.controller('newController',[function() {
+        this.a= 'hello';
+    }]);
+
+    app.controller('helloController',[Hello]);
+    function Hello() {
+        this.a = '这是新语法糖';
+        this.b = 1;
+    }
+    Hello.prototype.add = function () {
+        this.b = this.b+1;
+    }
+</script>
+</body>
+</html>

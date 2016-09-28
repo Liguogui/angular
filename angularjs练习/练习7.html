@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>ng-7</title>
+</head>
+<body>
+
+<div ng-controller="myController">
+    <div>outer: {{sum2}}</div>
+    <ul>
+        <li ng-repeat="item in arr track by $index">
+            {{item}}
+            <button ng-click="$parent.sum2=sum2+item">increase</button>
+            <div>inner: {{sum2}}</div>
+        </li>
+    </ul>
+</div>
+<div ng-controller="OuterCtrl">
+    <span>{{a}}</span>
+    <div ng-controller="InnerCtrl">
+        <span>{{a}}</span>
+        <button ng-click="$parent.a=a+1">increase a</button>
+    </div>
+</div>
+
+<script src="angular.min.js"></script>
+<script>
+    var app = angular.module('myApp',[]);
+    app.controller('myController',['$rootScope','$scope','$timeout',function ($rootScope,$scope,$timeout) {
+            $scope.arr = [1,2,3];
+        $scope.sum1 = 0;
+        $scope.sum2 = 2;
+//        var child = {
+//            a: 1
+//        };
+//        child.a++;
+        var child = $scope.$new();
+        child.$watch('a',function (newValue) {
+            alert(newValue);
+        });
+        child.a = 1;
+        $timeout(function () {
+            child.a = child.a +1;
+        },3500);
+
+    }]);
+
+    app.controller('OuterCtrl',['$rootScope','$scope',function ($rootScope,$scope) {
+//        $scope.data = {
+//            a:1
+//        }
+        $scope.a = 1;
+    }]);
+    app.controller('InnerCtrl',['$rootScope','$scope',function ($rootScope,$scope) {
+
+    }]);
+
+    app.factory("EventBus", function() {
+        var eventMap = {};
+
+        var EventBus = {
+            on : function(eventType, handler) {
+                //multiple event listener
+                if (!eventMap[eventType]) {
+                    eventMap[eventType] = [];
+                }
+                eventMap[eventType].push(handler);
+            },
+
+            off : function(eventType, handler) {
+                for (var i = 0; i < eventMap[eventType].length; i++) {
+                    if (eventMap[eventType][i] === handler) {
+                        eventMap[eventType].splice(i, 1);
+                        break;
+                    }
+                }
+            },
+
+            fire : function(event) {
+                var eventType = event.type;
+                if (eventMap && eventMap[eventType]) {
+                    for (var i = 0; i < eventMap[eventType].length; i++) {
+                        eventMap[eventType][i](event);
+                    }
+                }
+            }
+        };
+        return EventBus;
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div ng-controller="myController">
+    <input type="text" ng-model="hehe">
+    <drink flavor={{ctrlFlavor}}></drink>
+    <two hehe=hehe></two>
+    <greeting greet=sayHello()></greeting>
+</div>
+<script src="angular.min.js"></script>
+<script>
+    var app = angular.module('myApp',[]);
+    app.controller('myController',['$scope',function ($scope) {
+            $scope.ctrlFlavor='百威';
+        $scope.sayHello = function () {
+            alert('hello');
+        }
+    }]);
+    app.directive('drink',[function () {
+        return{
+            restrict:'AE',
+            scope:{
+              flavor:'@' //父$scope传递的是字符串，在属性值中插入{{}}即可，单向绑定
+            },
+            template:'<div>{{flavor}}</div>'
+//            link:function (scope,ele,attrs) {
+//                scope.flavor = scope.ctrlFlavor;
+//            }
+        }
+    }]);
+    app.directive('two',[function () {
+        return{
+            restrict:'AE',
+            scope:{
+              hehe:'=' //这个属性和app.controller的$scope的同一个属性一样，双向绑定
+            },
+            template:'<input type="text" ng-model="hehe">'
+        }
+    }]);
+    app.directive('greeting',[function () {
+        return{
+            restrict:'AE',
+            scope:{
+                greet:'&' //传递函数
+            },
+            template:'<div ng-click="greet()">打招呼</div>'
+        }
+    }]);
+</script>
+</body>
+</html>

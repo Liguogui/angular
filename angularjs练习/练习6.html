@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>ng-6</title>
+    <style>
+        .active{
+            color:red;
+        }
+        .data-item {
+            float: left;
+            width: 20px;
+            background-color: #c0c0c0;
+            border: 1px solid #080808;
+        }
+    </style>
+</head>
+<body ng-app="myApp">
+<div ng-controller="myController">
+    <div>{{f()}}</div>
+    <div>{{abs(-5)}}</div>
+    <button ng-click="add()">Add Item</button>
+    <!--1-->
+    <ul>
+        <li ng-repeat="item in arr1">{{item}}</li>
+    </ul>
+
+<!--2-->
+    <ul>
+        <li ng-repeat="item in arr2 track by $index">{{item}}</li>
+    </ul>
+
+
+<!--3-->
+    <ul>
+        <li ng-repeat="childArr in arr3 track by $index">
+            {{$index}}
+            <ul>
+                <li ng-repeat="item in childArr track by $index">{{item}}</li>
+            </ul>
+        </li>
+    </ul>
+
+
+
+    <!--4-->
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="child in arr4">
+            <td>{{child.name}}</td>
+            <td>{{child.age}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!--5-->
+    <ul>
+        <li ng-repeat="(key, value) in obj">{{key}}: {{value}}</li>
+    </ul>
+
+    <!--6数据监控-->
+    <button ng-click="changeA()">改变数据a</button>
+
+    <!--样式的数据绑定-->
+    <ul class="list-group">
+        <li ng-repeat="item in items" ng-class="{true:'list-group-item active', false: 'list-group-item'}[item==selectedItem]" ng-click="select(item)">
+            {{item.title}}
+        </li>
+    </ul>
+    <p ng-class="{'active':haha}">样式绑定二</p>
+
+    <div ng-if="en">ng-if</div>
+
+    <!--流程控制-->
+        <ul>
+            <li ng-if="condition==1">if 1</li>
+            <li ng-if="condition==2">if 2</li>
+
+            <li ng-show="condition==1">show 1</li>
+            <li ng-show="condition==2">show 2</li>
+        </ul>
+
+        <button ng-click="change()">change</button>
+
+    <!--数据联动-->
+        <ul>
+            <li ng-repeat="province in provinceArr" ng-class="{true:'list-group-item active', false: 'list-group-item'}[province==selectedProvince]" ng-click="selectProvince(province)">
+                {{province}}
+            </li>
+        </ul>
+        <ul>
+            <li ng-repeat="city in cityArr" ng-class="{true:'list-group-item active', false: 'list-group-item'}[city==selectedCity]" ng-click="selectCity(city)">
+                {{city}}
+            </li>
+        </ul>
+
+    <select class="form-control col-md-6" ng-model="selectedProvince" ng-options="province for province in provinceArr"></select>
+    <select class="form-control col-md-6" ng-model="selectedCity" ng-options="city for city in cityArr"></select>
+
+    <!--冒泡排序算法-->
+        <button ng-click="sort()">Sort</button>
+        <div>
+            <div ng-repeat="item in arr track by $index" class="data-item" ng-style="{'height': item*5+'px'}"></div>
+        </div>
+</div>
+<script src="angular.min.js"></script>
+<script>
+
+    var app = angular.module('myApp',[]);
+
+    app.controller('myController',['$rootScope','$scope','$timeout',function ($rootScope,$scope,$timeout) {
+//        冒泡排序算法可视化
+        $scope.arr = [2, 4, 5, 63, 4, 5, 55, 2, 4, 43];
+
+        $scope.sort = function () {
+            if (!sort($scope.arr)) {
+                $timeout(function() {
+                    $scope.sort();
+                }, 500);
+            }
+        };
+
+        function sort(array) {
+            // 喵的，写到这个才发现yield是多么好啊
+            for (var i = 0; i < array.length; i++) {
+                for (var j = array.length; j > 0; j--) {
+                    if (array[j] < array[j - 1]) {
+                        var temp = array[j - 1];
+                        array[j - 1] = array[j];
+                        array[j] = temp;
+
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+//        冒泡排序算法
+
+
+
+
+
+
+
+
+
+
+
+//        数据联动
+        $scope.provinceArr = ["江苏", "云南"];
+        $scope.cityArr = [];
+
+        $scope.$watch("selectedProvince", function(province) {
+            // 真正有用的代码在这里，实际场景中这里可以是调用后端服务查询的关联数据
+            switch (province) {
+                case "江苏": {
+                    $scope.cityArr = ["南京", "苏州"];
+                    break;
+                }
+                case "云南": {
+                    $scope.cityArr = ["昆明", "丽江"];
+                    break;
+                }
+            }
+        });
+
+        $scope.selectProvince = function(province) {
+            $scope.selectedProvince = province;
+        };
+
+        $scope.selectCity = function(city) {
+            $scope.selectedCity = city;
+        };
+    //  数据联动
+
+
+
+        $scope.condition = 1;
+
+        $scope.change = function() {
+            $scope.condition = 2;
+        };
+
+            $scope.en = false;
+
+            $scope.haha = true;
+
+            $scope.items = [];
+
+            for (var i=0; i<10; i++) {
+                $scope.items.push({
+                    title:i
+                });
+            }
+
+            $scope.selectedItem = $scope.items[0];
+
+            $scope.select = function(item) {
+                $scope.selectedItem = item;
+            };
+
+
+
+
+
+
+
+
+
+        $scope.a = 1;
+
+        $scope.$watch("a", function(newValue, oldValue) {
+            alert(oldValue + " -> " + newValue);
+        });
+
+        $scope.changeA = function() {
+            $scope.a = 2;
+        };
+
+
+        $scope.obj = {
+            a: 1,
+            b: 2,
+            c: 3
+        };
+
+
+        $scope.arr4 = [{
+            name: "Tom",
+            age: 5
+        }, {
+            name: "Jerry",
+            age: 2
+        }];
+
+
+        $scope.arr3 = [
+            [11, 12, 13],
+            [21, 22, 23],
+            [31, 32, 33]
+        ];
+
+
+
+        $scope.arr2 = [1, 1, 3];
+
+        $scope.arr1 = [1,2,3];
+        $scope.add = function(){
+            var a = $scope.arr1.length;
+            var b = $scope.arr1[a-1]+1;
+            $scope.arr1.push(b);
+        };
+        $scope.tom = {
+            sex:1
+        };
+
+        $scope.f = function () {
+            if($scope.tom.sex===1){
+                return '男'
+            }
+            else{
+                return '女'
+            }
+        };
+        $scope.abs = function(num){
+            return Math.abs(num);
+        }
+    }]);
+</script>
+</body>
+</html>

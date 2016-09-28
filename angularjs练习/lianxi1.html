@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ng-1</title>
+</head>
+<body ng-app="demo">
+    <div ng-controller="parentController">
+
+        <p>{{emitValue}}</p>
+
+        <p><input type="text" ng-model="parentName"></p>
+
+        <button ng-click="broadcastEvent()">$broadcast</button>
+
+        <div ng-controller="childController">
+
+            <p>{{broadcastValue}}</p>
+
+            <p><input type="text" ng-model="childName"></p>
+
+            <button ng-click="emitEvent()">$emit</button>
+        </div>
+    </div>
+
+<script src="angular.min.js"></script>
+    <script>
+        var demo = angular.module('demo',[]);
+        demo.controller('parentController',['$rootScope','$rootScope',function($rootScope,$scope){
+
+            $rootScope.rootName = '我是祖宗';
+
+            $scope.parentName= 'parent';
+
+            $scope.broadcastEvent = function(){
+
+                $scope.$broadcast('broadcastEvent',$scope.parentName);
+
+            };
+            $scope.$on('emitEvent',function(e,value){
+
+                $scope.emitValue = value;
+
+            });
+        }]);
+
+        demo.controller('childController',['$rootScope','$scope',function ($rootScope,$scope) {
+
+            $scope.childName = 'child';
+
+            $scope.emitEvent = function(){
+
+                $scope.$emit('emitEvent',$scope.childName);
+            };
+            $scope.$on('broadcastEvent',function(e,value){
+                $scope.broadcastValue = value;
+            });
+        }])
+
+    </script>
+</body>
+</html>

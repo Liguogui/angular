@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div ng-controller="myController">
+        {{hello}}
+        <hello hi="你好" say="{{hello}}"></hello>
+        <hello hi="你讲乜" hehe="chishi" say="{{wawu}}"></hello>
+    </div>
+    <script src="angular.min.js"></script>
+    <script>
+        var app = angular.module('myApp',[]);
+        app.controller('myController',['$scope',function ($scope) {
+            $scope.wawu = 'angular';
+            $scope.hello = 'hello';
+            $scope.chishi = function () {
+                console.log('吃屎去吧');
+            }
+        }]);
+        app.directive('hello',[function () {
+            return{
+                restrict:'E',
+                replace:true,
+                scope:{
+                    hi:'@',
+//                    hehe:'&'   //hehe="chishi()"
+                    hehe:'=',
+                    say:'@'
+                },
+                template:'<div ng-click="hehe()">{{say}} {{hi}} {{hello}}</div>'
+//                link:function (scope,ele,attrs) {
+//                    scope.hello = '你好';
+//                }
+            }
+        }]);
+
+    </script>
+</body>
+</html>

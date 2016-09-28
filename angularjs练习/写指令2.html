@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div ng-controller="myController">
+    <accordion>
+        <expander ng-repeat="expander in expanders" expander-title="expander.title">
+            {{expander.text}}
+        </expander>
+    </accordion>
+</div>
+<script src="angular.min.js"></script>
+<script>
+    var app = angular.module('myApp',[]);
+    app.controller('myController',['$scope',function ($scope) {
+        $scope.title = '点击展开';
+        $scope.text = '这里是内容'
+    }]);
+    app.directive('accordion',[function () {
+        return{
+            restrict:'EA',
+            replace:true,
+            transclude:true,
+            template:'<div ng-transclude></div>',
+            controller:function () {
+                var expanders = [];
+                this.gotOpened = function (selectedExpander){
+                    angular.forEach(expanders,function (expander) {
+                        if(selectedExpander != expander){
+                            expander.showMe = false;
+                        }
+                    };
+                };
+                this.addExpander = function (expander) {
+                    expanders.push(expander);
+                }
+            }
+        }
+    }]);
+    app.directive('expander',[function () {
+        return{
+            restrict:'EA',
+            replace:true,
+            transclude:true,
+            require:'^?accordion',
+            template:'<div>'+
+            '<div class="title" ng-click="toggle()">{{title}}</div>'+
+            '<div class="body" ng-show="showMe" ng-transclude></div>'+
+            '</div>',
+            link:function (scope,ele,attrs,accordionController) {
+                scope.showMe = false;
+                scope.toggle=function () {
+                    scope.showMe = !scope.showMe;
+                    accordionController.gotOpened(scope);
+                }
+            }
+        }
+    }]);
+</script>
+</body>
+</html>

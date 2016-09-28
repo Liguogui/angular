@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div ng-controller="myController">
+    {{user.name}}
+    <superman a>动感a</superman>
+    <superman a b>动感ab</superman>
+    <superman a b c>动感abc</superman>
+    <hello></hello>
+    <hello></hello>
+    <hello></hello>
+    <hello></hello>
+</div>
+
+<script src="angular.min.js"></script>
+<script>
+    var app = angular.module('myApp',[]);
+    app.controller('myController',['$scope',function ($scope) {
+
+    }]);
+    app.directive('hello',[function () {
+        return {
+            restrict:'AE',
+            scope:true,
+            template:'<input type="text" ng-model="user.name"><span>{{user.name}}</span>',
+            link:function (scope,ele,attrs) {
+
+            }
+        }
+    }]);
+    app.directive('superman',[function () {
+        return{
+            restrict:'AE',
+            scope:{},
+//            向其他指令提供的方法就写在controller里面
+            controller:function ($scope) {
+                $scope.arr = [];
+                this.addA = function () {
+                    $scope.arr.push('a');
+                };
+                this.addB = function () {
+                    $scope.arr.push('b');
+                };
+                this.addC = function () {
+                    $scope.arr.push('c');
+                };
+            },
+            link:function (scope,ele,attrs) {
+                ele.on('mouseenter',function () {
+                    console.log(scope.arr);
+                });
+            }
+        }
+    }]);
+    app.directive('a',[function () {
+        return{
+            restrict:'AE',
+            require:'^superman',
+            link:function (scope,ele,attrs,supermanScope) {
+                supermanScope.addA();
+            }
+        }
+    }]);
+    app.directive('b',[function () {
+        return{
+            restrict:'AE',
+            require:'^superman',
+            link:function (scope,ele,attrs,supermanScope) {
+                supermanScope.addB();
+            }
+        }
+    }]);
+    app.directive('c',[function () {
+        return{
+            restrict:'AE',
+            require:'^superman',
+            link:function (scope,ele,attrs,supermanScope) {
+                supermanScope.addC();
+            }
+        }
+    }]);
+
+
+</script>
+</body>
+</html>

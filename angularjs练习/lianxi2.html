@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ng-2</title>
+</head>
+<body ng-app="demo">
+<div ng-controller="parentController">
+
+    <p><input type="text" ng-model="parentName"></p>
+
+    <div ng-controller="childController">
+
+        <p><input type="text" ng-model="parentName"></p>
+        这个是：{{a}}
+    </div>
+</div>
+
+<script src="angular.min.js"></script>
+<script>
+    var demo = angular.module('demo',[]);
+    demo.controller('parentController',['$rootScope','$scope',function($rootScope,$scope){
+        $rootScope.a = '我是a';
+        $scope.parentName = '父亲';
+    }]);
+
+    demo.controller('childController',['$rootScope','$scope',function ($rootScope,$scope) {
+
+        $scope.parentName = '父亲';
+    }])
+
+</script>
+</body>
+</html>

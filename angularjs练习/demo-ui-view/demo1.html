@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        a{
+            color:#000;
+        }
+        .active{
+            color:yellow;
+        }
+    </style>
+</head>
+<body>
+    <!--这个页面不允许出现ng-controller-->
+    <!--当切换到ui-sref的state对应的url时，就会自动给元素加上active这个类-->
+    <a ui-sref="home" ui-sref-active="active">home</a>
+    <a ui-sref="school" ui-sref-active="active">school</a>
+    <a ui-sref="room" ui-sref-active="active">room</a>
+    <div ui-view="index"></div>
+<script src="../angular.1.5.8/angular.min.js"></script>
+<script src="angular-ui-router.min.js"></script>
+<script src="app.js"></script>
+<!--妈的还以为myApp可以自动寻找，原来是把他当做全局变量-->
+<!--也就是说还要引入controller的文件，不然controller文件里面找不到myApp-->
+ <script src="controller/homeController.js"></script>
+ <script src="controller/schoolController.js"></script>
+ <script src="controller/roomController.js"></script>
+</body>
+</html>

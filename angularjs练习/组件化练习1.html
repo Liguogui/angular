@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>ng-9</title>
+</head>
+<body>
+<div ng-controller="CountCtrl as vm">
+    {{vm.count}}
+    <counter count="vm.count"></counter>
+</div>
+<script src="angular.1.5.8/angular.min.js"></script>
+<script>
+    var app = angular.module("myApp", []);
+    app.controller('CountCtrl',[function() {
+        this.count = 1;
+    }]);
+    app.component('counter', {
+        bindings: {
+            count: '='
+        },
+        controller: function () {
+            function increment() {
+                this.count++;
+            }
+            function decrement() {
+                this.count--;
+
+            }
+            this.increment = increment;
+            this.decrement = decrement;
+        },
+        template: [
+            '<div class="todo">',
+            '<input type="text" ng-model="counter.count">',
+            '<button type="button" ng-click="counter.decrement();">-</button>',
+            '<button type="button" ng-click="counter.increment();">+</button>',
+            '</div>'
+        ].join('')
+    });
+</script>
+</body>
+</html>

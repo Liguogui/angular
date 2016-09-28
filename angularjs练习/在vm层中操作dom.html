@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-controller="myController">
+<h1>请点击这里</h1>
+<p v-if="show">{{yuanben}}</p>
+<ul>
+    <li>点击后出现以下内容：</li>
+    <li v-for="item in items">{{item}}</li>
+</ul>
+<script src="angular.min.js"></script>
+<script src="vue.js"></script>
+<script src="jquery-1.8.3.min.js"></script>
+<script>
+//    var app = angular.module('myApp',[]);
+//    app.controller('myController',['$scope',function ($scope) {
+////        ok没问题
+////        $scope.en = function(){
+////            $scope.show = true;
+////            $scope.yuanben = '出现了'
+////        }
+//
+////        这样子是不可以的
+//        $('h1').on('click',function(){
+//            $scope.yuanben = '出现了'
+//        });
+//
+//    }]);
+
+
+    var  ex1 = new Vue({
+                    el:'body',
+                    data:{
+                        show:false,
+                        yuanben:'出现了',
+                        items:[]
+                    },
+                    methods:{
+                        greet:function(){
+                            console.log('在控制台中打印出现了');
+                        }
+                    }
+                });
+
+
+    $('h1').on('click',function(){
+        ex1.show = true;
+        ex1.items = ['哈哈','蛤','续一秒'];
+        ex1.greet();
+    });
+</script>
+</body>
+</html>

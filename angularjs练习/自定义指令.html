@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div ng-controller="myController">
+    <hello say="move()"></hello>
+</div>
+<div ng-controller="youController">
+    <hello say="move2()"></hello>
+</div>
+
+<script src="angular.min.js"></script>
+<script>
+    var app = angular.module('myApp',[]);
+    app.controller('myController',['$scope',function ($scope) {
+            $scope.move = function () {
+                console.log('hello');
+            }
+    }]);
+    app.controller('youController',['$scope',function ($scope) {
+        $scope.move2 = function () {
+            console.log('hi');
+        }
+    }]);
+    app.directive('hello',[function () {
+        return{
+            restrict:'E',
+            template:'<div>hello</div>',
+            link:function (scope,ele,attrs) {
+                ele.on('mouseenter',function () {
+//                    scope.move();
+//                    scope.$apply('move()');
+//                    scope.$apply(function () {
+//                        console.log('第三个函数吗？');
+//                    });
+                    scope.$apply(attrs.say);
+                });
+            }
+        }
+    }]);
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<html>
+<head>
+    <script src="../angular.min.js"></script>
+    <script src="angular-ui-router.min.js"></script>
+
+    <style>.active { color: red; font-weight: bold; }</style>
+</head>
+
+<body ng-app="helloworld">
+<div ng-controller="">
+    <a ui-sref="hello" ui-sref-active="active">Hello</a>
+    <a ui-sref="about" ui-sref-active="active">About</a>
+</div>
+
+
+<ui-view></ui-view>
+<script>
+    var myApp = angular.module('helloworld', ['ui.router']);
+
+    myApp.config(function($stateProvider) {
+
+        $stateProvider.state({
+            name: 'hello',
+            url: '/hello',
+            template: '<h3>hello world!</h3>'
+        });
+        $stateProvider.state({
+            name: 'about',
+            url: '/about',
+            template: '<h3>Its the UI-Router hello world app!</h3>'
+        });
+    });
+</script>
+</body>
+</html>

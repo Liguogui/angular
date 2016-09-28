@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>ng-雇员</title>
+    <style>
+        .active{
+            color:red;
+        }
+    </style>
+</head>
+<body>
+<div ng-controller="myController">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>性别</th>
+            <th>出生地</th>
+            <th>民族</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input type="text" ng-model="user.name"></td>
+            <td><input type="number" ng-model="user.age"></td>
+            <td>男：<input type="radio" ng-model="user.sex" name="sex" value="男">，女：<input type="radio" ng-model="user.sex" name="sex" value="女"></td>
+            <td><select ng-model="user.province" ng-options="province for province in provinceArr"></select>
+                <select ng-model="user.city" ng-options="city for city in cityArr"></select>
+            </td>
+            <td>
+                <select ng-model="selectNation" ng-options="nation for nation in nationArr"></select>
+                <input type="text" ng-if="shaoshu" ng-model="user.nation">
+            </td>
+            <td><button ng-click="submit()">上交</button></td>
+        </tr>
+        <tr ng-repeat="item in items" ng-class="{true:'active',false:''}[item === selectItem]" ng-click="select(item)">
+            <td>{{item.name}}</td>
+            <td>{{item.age}}</td>
+            <td>{{item.sex}}</td>
+            <td>{{item.province}}</td>
+            <td>{{item.city}}</td>
+            <td>{{item.nation}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+<script src="angular.min.js"></script>
+<script>
+    var app = angular.module('myApp',[]);
+
+    app.controller('myController',['$rootScope','$scope',function ($rootScope,$scope) {
+
+        $scope.items = [];
+        $scope.user = {};
+        $scope.user.name = '';
+        $scope.user.age = '';
+        $scope.user.sex = '';
+        $scope.user.province = '';
+        $scope.user.city = '';
+        $scope.user.nation = '';
+
+
+        $scope.submit= function () {
+            $scope.items.push($scope.user);
+//            初始化数据
+            $scope.user = {};
+            $scope.shaoshu = false;
+            $scope.selectNation ='';
+        };
+
+
+
+        $scope.provinceArr = ["江苏", "云南"];
+        $scope.cityArr = [];
+        $scope.nationArr=['汉族','少数民族'];
+
+
+        $scope.$watch("user.province", function(province) {
+            switch (province) {
+                case "江苏": {
+                    $scope.cityArr = ["南京", "苏州"];
+                    break;
+                }
+                case "云南": {
+                    $scope.cityArr = ["昆明", "丽江"];
+                    break;
+                }
+            }
+        });
+        $scope.$watch("selectNation", function(nation) {
+            if(nation === '少数民族'){
+                $scope.shaoshu = true;
+                $scope.user.nation = '';
+            }
+            else{
+                $scope.user.nation = nation;
+            }
+        });
+
+        $scope.select = function (item) {
+            $scope.selectItem = item;
+        }
+
+    }])
+</script>
+</body>
+</html>
